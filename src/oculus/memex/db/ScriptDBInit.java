@@ -16,8 +16,8 @@ public class ScriptDBInit {
 	public static String _port = "3306"; 
 	public static String _user = "root";
 	public static String _pass = "admin";
-	public static String _htSchema = "memex_ht";
-	public static String _oculusSchema = "memex_oculus";
+	public static String _htSchema = "roxy_ui";
+	public static String _oculusSchema = "memex_uncharted";
 	public static boolean _clearDB = false;
 
 	public static String _hdfsClusterAddress = "";	

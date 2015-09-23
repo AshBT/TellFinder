@@ -33,8 +33,8 @@ public class ClusterAttributes {
 						  "attribute VARCHAR(32)," +
 						  "value VARCHAR(2500)," +
 						  "count INT," +
-						  "PRIMARY KEY (id) )," +
-						  "KEY `IX_" + CLUSTER_ATTRIBUTE_TABLE + "_clusterid` (`clusterid`)";
+						  "PRIMARY KEY (id)," +
+						  "KEY `IX_" + CLUSTER_ATTRIBUTE_TABLE + "_clusterid` (`clusterid`))";
 			DBManager.tryStatement(conn, sqlCreate);
 		} catch (Exception e) {
 			e.printStackTrace();

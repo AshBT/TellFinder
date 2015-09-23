@@ -204,7 +204,7 @@ public class TimeAggregation {
 		initTable(MOD_TIME_TABLE);
 
 		Connection htconn = htdb.open();
-		int maxadid = DBManager.getInt(htconn, "select max(id) from memex_ht.ads", "Get max ads id");
+		int maxadid = DBManager.getInt(htconn, "select max(id) from " + ScriptDBInit._htSchema + ".ads", "Get max ads id");
 		htdb.close(htconn);
 		
 		computeTimes();

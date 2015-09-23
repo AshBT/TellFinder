@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="xdataht" default="all" basedir=".">
+
+	<target name="path">
+		<path id="project.class.path">
+			<fileset dir="scripts">
+				<include name="preprocess/*.jar" />
+			</fileset>
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+	</target>
+
+
+	<target name="ads_locations" depends="path" description="Create memex_oculus.ads_locations from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.geo.AdLocations">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="cluster" depends="path" description="Create memex_oculus.ads_clusters from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.clustering.Cluster">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="locationtime" depends="path" description="Create memex_oculus.locationtime from memex_oculus.locations">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.LocationTimeAggregation">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="time" depends="path" description="Create memex_oculus.temporal from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.TimeAggregation">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="timehealth" depends="path" description="Create memex_oculus.temporalhealth from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.TimeHealthAggregation">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="sources" depends="path" description="Create memex_oculus.sourcecounts from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.SourceAggregation">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="attributelinks" depends="path" description="Create memex_oculus.attributes and memex_oculus.attributes_links">
+		<java classpathref="project.class.path" classname="oculus.memex.graph.AttributeLinks">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="ads_extracted" depends="path" description="Create memex_oculus.ads_extracted,ads_phones,ads_bad_phones from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.extraction.AdExtraction">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="all">
+		<antcall target="ads_locations" />
+		<antcall target="locationtime" />
+		<antcall target="time" />
+		<antcall target="timehealth" />
+		<antcall target="sources" />
+		<antcall target="ads_extracted" />
+		<antcall target="cluster" />
+		<antcall target="attributelinks" />
+	</target>
+
+</project>
