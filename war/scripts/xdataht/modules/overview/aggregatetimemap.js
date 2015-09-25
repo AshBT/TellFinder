@@ -327,6 +327,9 @@ define([ '../util/rest', '../util/ui_util', '../util/kmeans', '../util/colors'],
 						data.ratioDelta = (data.avgDay-data.periodAvgDay)/data.avgDay;
 						data.delta = data.avgDay-data.periodAvgDay;
 					}
+					if (isNaN(data.ratioDelta)) {
+						data.ratioDelta = 0;
+					}
 					if (this.maxCount<count) this.maxCount = count;
 					if (this.maxDelta<data.delta) this.maxDelta = data.delta;
 					this.geoData.push(data);
@@ -390,20 +393,32 @@ define([ '../util/rest', '../util/ui_util', '../util/kmeans', '../util/colors'],
 
 				rest.get(url + '?minLon=' + that.initMapExtents.left + '&maxLon=' + that.initMapExtents.right, 'Get location ad volume time series',
 					function(result) {		// first get data for the visible portion of the map
+
 						that.geoTimeData.length = 0;
-						that.geoTimeData = result.results;
+						if(result.results && result.results instanceof Array) {
+							that.geoTimeData = result.results;
+						} else {
+							//handle case with only single data element
+							that.geoTimeData = [];
+							that.geoTimeData.push(result.results);
+						}
+
 						that.setTimeWindow(that.timeStart, that.timeEnd);
 						that.hideLoadingDialog();
 
 						// now get the rest
 						rest.get(url + '?minLon=' + that.initMapExtents.right, 'Get location ad volume time series',
 							function(result) {
-								$.merge(that.geoTimeData, result.results);
+								if(result && result.results) {
+									$.merge(that.geoTimeData, result.results);
+								}
 							});
 
 						rest.get(url + '?maxLon=' + that.initMapExtents.left, 'Get location ad volume time series',
 							function(result) {
-								$.merge(that.geoTimeData, result.results);
+								if(result && result.results) {
+									$.merge(that.geoTimeData, result.results);
+								}
 							});
 					});
 			},
