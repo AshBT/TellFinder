@@ -291,6 +291,11 @@ define([ '../util/rest', '../util/ui_util', '../util/kmeans', '../util/colors'],
 				    var two = new Date(second.getFullYear(), second.getMonth(), second.getDate()-1);
 					var windowDayStart = one.getTime();
 					var windowDayEnd = two.getTime();
+
+					if (!_.isArray(locationData.timeseries)) {
+						locationData.timeseries = [locationData.timeseries];
+					}
+
 					for (var j=0; j<locationData.timeseries.length; j++) {
 						var timeData = locationData.timeseries[j];
 						if (minDay==0 || timeData.day<minDay) minDay = timeData.day;
