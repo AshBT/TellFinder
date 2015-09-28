@@ -55,6 +55,18 @@
 		</java>
 	</target>
 
+	<target name="attributelocations" depends="path" description="Create memex_oculus.attributes_locations">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.AttributeLocation">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
+	<target name="attributedetails" depends="path" description="Create memex_oculus.attribute_details">
+		<java classpathref="project.class.path" classname="oculus.memex.clustering.AttributeDetails">
+			<arg value="./scripts/preprocess/db.properties"/>
+		</java>
+	</target>
+
 	<target name="ads_extracted" depends="path" description="Create memex_oculus.ads_extracted,ads_phones,ads_bad_phones from memex_ht.ads">
 		<java classpathref="project.class.path" classname="oculus.memex.extraction.AdExtraction">
 			<arg value="./scripts/preprocess/db.properties"/>
@@ -70,6 +82,8 @@
 		<antcall target="ads_extracted" />
 		<antcall target="cluster" />
 		<antcall target="attributelinks" />
+		<antcall target="attributelocations" />
+		<antcall target="attributedetails" />
 	</target>
 
 </project>

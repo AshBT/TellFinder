@@ -611,7 +611,7 @@ public class CaseBuilderResource {
 		HashSet<Integer> attributeClusters = getClustersInCase(oculusdb, id, true);
 		AttributeDetailsResource adr = new AttributeDetailsResource();
 		for(Integer cluster: attributeClusters) {
-			details = adr.handleGet("id", Integer.toString(cluster), request).getMemberDetails();
+			details = adr.getAttributeDetails("id", Integer.toString(cluster), request).getMemberDetails();
 			for(int i = 0; i < details.size(); i++){
 				StringMap map = details.get(i);
 				map.put("isAttribute", "true");

@@ -160,15 +160,19 @@ define([ '../util/ui_util', './table', './timeline', './attr_chart', './map', '.
 		},
 
 		getAttributeDetails = function(baseUrl, attribute, value, callback) {
-			rest.get(baseUrl + 'rest/attributeDetails/' + attribute + "/" + value, 'Get attribute details', function(response) {
+			var url = baseUrl + 'rest/attributeDetails';
+			if(attribute=='images'){
+				url += '/images/' + value;
+			} else {
+				url += '?attribute=' + attribute + "&value=" + encodeURIComponent(value);
+			}
+			rest.get(url, 'Get attribute details', function(response) {
 				detailsCallback(response, callback);
 			});
 		},
 
 		getAttributeIdDetails = function(baseUrl, attributeid, callback) {
-			rest.get(baseUrl + 'rest/attributeDetails/id/' + attributeid, 'Get attribute id details', function(response) {
-				detailsCallback(response, callback);
-			});
+			getAttributeDetails(baseUrl,'id',attributeid,callback);
 		},
 
         getTipDetails = function(baseUrl, tip, callback) {
@@ -779,8 +783,10 @@ define([ '../util/ui_util', './table', './timeline', './attr_chart', './map', '.
 					var that = this;
 					rest.get(baseUrl + "rest/classifiers/fetch", "Get classifiers + keywords",
 						function(result) {
-							for (var i = 0; i < result.classifiers.length; i++) {
-								that.classifiers.push(result.classifiers[i].classifier);
+							if (result && result.classifiers && result.classifiers.length) {
+								for (var i = 0; i < result.classifiers.length; i++) {
+									that.classifiers.push(result.classifiers[i].classifier);
+								}
 							}
 						}
 					);

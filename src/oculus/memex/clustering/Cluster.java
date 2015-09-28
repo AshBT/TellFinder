@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import oculus.memex.aggregation.LocationCluster;
+import oculus.memex.concepts.AdKeywords;
 import oculus.memex.db.DBManager;
 import oculus.memex.db.MemexHTDB;
 import oculus.memex.db.MemexOculusDB;
@@ -59,6 +60,7 @@ public class Cluster {
 		LocationCluster.initTable(db,conn);
 		ClusterDetails.initTable(db, conn);
 		ClusterLinks.initTable(db, conn);
+		AdKeywords.initTable(db, conn, false);
 		db.close(conn);
 	}
 	

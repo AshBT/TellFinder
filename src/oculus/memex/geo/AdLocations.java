@@ -243,6 +243,7 @@ public class AdLocations {
 
 	private static void extractLocations() {
 		long fullstart = System.currentTimeMillis();
+		Locations.initTable();
 		MemexOculusDB oculusdb = MemexOculusDB.getInstance();
 		Connection oculusconn = oculusdb.open();
 		initTable(oculusdb, oculusconn);

@@ -136,7 +136,7 @@ public class AttributeDetails {
 		System.out.print(" Fetch ads: ");
 		HashMap<Integer,HashSet<Integer>> adToAttributes = getAdsInAttributes(updateSet, allAttributes, oculusconn, htconn, ads);
 		long end = System.currentTimeMillis();
-		System.out.print((end-start)+"ms");
+		System.out.print((end - start) + "ms");
 		start = end;
 
 		HashMap<Integer,ClusterData> result = readAdDetails(oculusconn, htconn, adKeywords, adLocations, allAttributes, sources, adToAttributes, ads);
@@ -144,6 +144,32 @@ public class AttributeDetails {
 		oculusdb.close(oculusconn);
 		htdb.close(htconn);
 		return result;
+	}
+
+	private static long commitAdString(Connection oculusconn, Connection htconn,
+									   HashMap<Integer, HashSet<Pair<String, String>>> adKeywords,
+									   AdLocationSet adLocations,
+									   HashMap<Integer, AttributeValue> allAttributes,
+									   HashMap<Integer, String> sources,
+									   HashMap<Integer, HashSet<Integer>> adToAttributes,
+									   StringBuffer adstring,
+									   HashMap<Integer,ClusterData> result)
+	{
+		long start = System.currentTimeMillis();
+		getMainDetails(allAttributes, adKeywords, adLocations, result, adToAttributes, htconn, sources, adstring);
+		long end = System.currentTimeMillis();
+		long mainTime = (end-start);
+		start = end;
+		getExtraDetails(allAttributes, result, adToAttributes, htconn, adstring);
+		end = System.currentTimeMillis();
+		long extraTime = (end-start);
+		start = end;
+		getAttributes(allAttributes, result, AdExtraction.ADS_PHONE_TABLE, adToAttributes, oculusconn, adstring);
+		getAttributes(allAttributes, result, AdExtraction.ADS_EMAILS_TABLE, adToAttributes, oculusconn, adstring);
+		getAttributes(allAttributes, result, AdExtraction.ADS_WEBSITES_TABLE, adToAttributes, oculusconn, adstring);
+		end = System.currentTimeMillis();
+		long phoneTime = (end-start);
+		return mainTime + extraTime + phoneTime;
 	}
 
 	private static HashMap<Integer,ClusterData> readAdDetails(Connection oculusconn, Connection htconn,
@@ -154,12 +180,8 @@ public class AttributeDetails {
 			HashMap<Integer, HashSet<Integer>> adToAttributes,
 			HashSet<Integer> ads) {
 		HashMap<Integer,ClusterData> result = new HashMap<Integer,ClusterData>();
-		long start;
-		long end;
-		long mainTime = 0;
-		long extraTime = 0;
-		long phoneTime = 0;
-		
+		long totaltime = 0;
+
 		// Fetch all the ad details and update the attribute data
 		StringBuffer adstring = new StringBuffer("(");
 		boolean isFirst = true;
@@ -171,26 +193,20 @@ public class AttributeDetails {
 			batchSize++;
 			if (batchSize==AD_SELECT_BATCH_SIZE) {
 				adstring.append(")");
-				start = System.currentTimeMillis();
-				getMainDetails(allAttributes, adKeywords, adLocations, result, adToAttributes, htconn, sources, adstring);
-				end = System.currentTimeMillis();
-				mainTime += (end-start);
-				start = end;
-				getExtraDetails(allAttributes, result, adToAttributes, htconn, adstring);
-				end = System.currentTimeMillis();
-				extraTime += (end-start);
-				start = end;
-				getAttributes(allAttributes, result, AdExtraction.ADS_PHONE_TABLE, adToAttributes, oculusconn, adstring);
-				getAttributes(allAttributes, result, AdExtraction.ADS_EMAILS_TABLE, adToAttributes, oculusconn, adstring);
-				getAttributes(allAttributes, result, AdExtraction.ADS_WEBSITES_TABLE, adToAttributes, oculusconn, adstring);
-				end = System.currentTimeMillis();
-				phoneTime += (end-start);
+				long time = commitAdString(oculusconn,htconn,adKeywords,adLocations,allAttributes,sources,adToAttributes,adstring,result);
+				totaltime += time;
+
 				adstring = new StringBuffer("(");
 				isFirst = true;
 				batchSize = 0;
 			}
 		}
-		System.out.println(" details: " + ads.size() + ":(" + mainTime + "," + extraTime + "," + phoneTime + ") ");
+		if (batchSize > 0) {
+			adstring.append(")");
+			long time = commitAdString(oculusconn,htconn,adKeywords,adLocations,allAttributes,sources,adToAttributes,adstring,result);
+			totaltime += time;
+		}
+		System.out.println(" details: " + ads.size() + ":(" + totaltime + ") ");
 		return result;
 	}
 
@@ -259,7 +275,7 @@ public class AttributeDetails {
 			if (av==null) continue;
 			if (av.attribute.equals("phone")) {
 				phones.put(av.value, i);
-			} else if (av.attribute.equals("email")){
+			} else if (av.attribute.equals("email")) {
 				emailVals.put(av.value, i);
 			} else {
 				webVals.put(av.value, i);

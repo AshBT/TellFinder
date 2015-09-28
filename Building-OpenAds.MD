@@ -20,44 +20,13 @@ NodeJS (optional)
 npm (optional)
 requireJS (optional)
 
-## Import data into Mysql
-Import `memex_small_with_raw.sql`. This should create the following tables in a schema `memex_ht`:
+## Import source data into Mysql
+Import `docs/sampledata/sample.sql`. This should create the following tables in a schema `roxy_ui`:
 
 	ads
 	ads_attributes
 	sources
 	
-Import `memex_small_openads.sql`. This should create the following tables in a schema `memex_oculus`:
-
-	ads_bad_phones
-	ads_clusters
-	ads_emails
-	ads_keywords
-	ads_locations
-	ads_numbers
-	ads_phones
-	ads_price_phones
-	ads_websites
-	attributes
-	attributes_details
-	attributes_links
-	attributes_location
-	bad_phones
-	case_contents
-	cases
-	clusters_attributes
-	clusters_details
-	clusters_links
-	clusters_location
-	keywords
-	locations
-	locationtime
-	processing_progress
-	states_provinces
-	tags
-	temporal
-	world_cities
- 
 ## MySql Setup
 If you are using this default mysql setup, then you don't need to do anything:
 
@@ -80,6 +49,13 @@ Alternatively, specify the destination for the WAR file at command-line:
 	ant -Dbuild.path=<webapps_directory>
 	
 Build the default target of `build.xml` with Ant. This will put a new war file in `webapps` directory.
+
+## Building the Uncharted MySQL views
+From the command line, run the following:
+
+	ant process.xml
+	 
+This will read in the original ads and do all the necessary preprocessing steps to populate the memex_uncharted table.
 
 ## Tomcat Setup
 Create a file called `<tomcat>/bin/setenv.bat` (or `setenv.sh`) containing:
