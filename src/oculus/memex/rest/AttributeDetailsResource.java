@@ -42,6 +42,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import oculus.memex.clustering.AttributeDetails;
@@ -139,12 +140,18 @@ public class AttributeDetailsResource  {
         return getResultFromMembers(members,log,request.getRemoteUser());
     }
 
-	
-	@GET
-	@Path("{attribute}/{value}")
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public ClusterDetailsResult handleGet(@PathParam("attribute")String attribute, @PathParam("value")String value, @Context HttpServletRequest request) {
 
+	@GET
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public ClusterDetailsResult handleGet(@Context HttpServletRequest request) {
+		MultivaluedMap<String, String> parameters = _uri.getQueryParameters(true);
+		String attribute = parameters.getFirst("attribute");
+		String value = parameters.getFirst("value");
+
+		return getAttributeDetails(attribute, value, request);
+	}
+
+	public ClusterDetailsResult getAttributeDetails(String attribute, String value, @Context HttpServletRequest request) {
         TimeLog log = new TimeLog();
         log.pushTime("Attribute details: " + attribute + ":" + value);
 

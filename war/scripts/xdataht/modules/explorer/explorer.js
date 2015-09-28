@@ -788,7 +788,7 @@ define(['../util/ui_util', '../util/rest', '../util/colors', '../util/bezier_arr
                         var allClusterIds = graphWidgetObj.getClusterIds();
                         var clustersToFetch = targets.filter(function (id) {
                             if (!allClusterIds[id]) {
-                                return id;
+                                return true;
                             }
                         });
 

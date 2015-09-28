@@ -291,11 +291,11 @@ public class GraphResource  {
 		HashSet<String> result = new HashSet<String>();		
 		AttributeDetailsResource adr = new AttributeDetailsResource();
 		HashSet<String> ad_ids = new HashSet<String>();
-		ArrayList<StringMap> details = adr.handleGet("id", clusterIDs[0], request).getMemberDetails();
+		ArrayList<StringMap> details = adr.getAttributeDetails("id", clusterIDs[0], request).getMemberDetails();
 		for(int i = 0; i < details.size(); i++) {
 			ad_ids.add(details.get(i).get("id"));
 		}
-		details = adr.handleGet("id", clusterIDs[1], request).getMemberDetails();
+		details = adr.getAttributeDetails("id", clusterIDs[1], request).getMemberDetails();
 		String newID;
 		for(int i = 0; i < details.size(); i++) {
 			newID = details.get(i).get("id");
