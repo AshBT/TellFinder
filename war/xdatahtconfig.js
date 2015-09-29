@@ -58,7 +58,7 @@ aperture.config.provide({
 				 */
 				'tms' : {
 					'name' : 'Base Map',
-					'url' : '../map/',
+					'url' : 'http://demo.tellfinder.com/map/',
 					'options' : {
 						'layername': 'world-graphite',
 						'osm': 0,

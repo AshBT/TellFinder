@@ -1,13 +1,8 @@
 
 # Setting up the build environment
-September 19, 2014
+September 29th, 2015
 
-How to set up the OpenAds build environment.
-
-## What additional files you need
-memex_small_with_raw.sql.gz
-memex_small_openads.zip
-openads-maps-9-19-2014.zip
+How to set up the Tellfinder build environment.
 
 ## What software you need
 JDK 7
@@ -30,13 +25,15 @@ Import `docs/sampledata/sample.sql`. This should create the following tables in 
 ## MySql Setup
 If you are using this default mysql setup, then you don't need to do anything:
 
-	database_host = localhost
-	database_port = 3306
-	database_user = root
-	database_password = admin
-	database_name = xdataht
+	database_type = mysql
+    database_host = localhost
+    database_port = 3306
+    database_user = root
+    database_password = admin
+    database_ht_schema = roxy_ui
+    database_oculus_schema = memex_uncharted
 	
-To change these, either edit `war\xdata-ht.properties` and rebuild the war, or copy the file into the `tomcat/conf`.
+To change these, either edit `war\xdataht.properties` and rebuild the war, or copy the file into the `tomcat/conf`.
 
 ## Java Setup
 Ensure JDK_HOME and JAVA_HOME environment variables are set and correct.
@@ -53,7 +50,7 @@ Build the default target of `build.xml` with Ant. This will put a new war file i
 ## Building the Uncharted MySQL views
 From the command line, run the following:
 
-	ant process.xml
+	ant -buildfile process.xml
 	 
 This will read in the original ads and do all the necessary preprocessing steps to populate the memex_uncharted table.
 
@@ -69,12 +66,19 @@ Open `<tomcat>\conf\tomcat-users.xml` and add the lines:
 
 `xxx` and `yyy` will be the username and password you use to log in later.
 
-Unzip `openads-maps-9-19-2014.zip` to `<tomcat>/webapps/maps`.
 
 ## Starting Tomcat
 Start tomcat by launching `tomcat/bin/startup.bat`
 
 Open a browser (recommended: Google Chrome) to http://localhost:8080/openads/
+
+## Map Server
+It is possible to host your own map server by deploying a war file containing the tiles in the same Tomcat server as Tellfinder.
+The format for the maps:
+
+	%WARFILE_NAME%/1.0.0/%baseLayer.tms.options.layername%/z/x/y.png
+	
+Where `baseLayer.tms.options.layername` is defined in xdatahtconfig.js
 
 ## Optimizing Javascript Code (Optional)
 In order run the optimizer on our Javascript code, we must install the requireJS command-line tools from npm.
